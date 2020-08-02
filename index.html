@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+{{ $envs := .Environments }}
+{{ $services := .WebServices }}
+{{ $rows := .Rows }}
+<style>
+    .A {
+        background-color: beige;
+    }
+
+    .B {
+        background-color: azure;
+    }
+
+    .error {
+        background-color: red;
+    }
+</style>
+<html>
+<head>
+    <title>Results</title>
+</head>
+<body>
+<table>
+    <tr style="font-weight: bold">
+        <td></td>
+        {{range .Environments}}
+            <td><a href="{{.BaseUrl}}">{{.Name}}</a></td> {{else}} (No environments found) {{end}}
+    </tr>
+    {{range $row := $rows}}
+        <tr {{ if ($row.Even) }} class="A" {{else}} class="B" {{end}}>
+            <td>{{$row.Name}}</td>
+            {{range $cell := $row.Cells}}
+                <td {{ if $cell.Content.IsError}} class="error" {{end}} title="{{$cell.Content.Title}}">{{ $cell.Content.Text}}</td>
+            {{end}}
+        </tr> {{end}}
+</table>
+</body>
+</html>
