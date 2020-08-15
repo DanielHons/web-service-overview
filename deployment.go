@@ -80,8 +80,9 @@ type ServiceInstance struct {
 }
 
 type Deployment struct {
-	config Configuration
-	Rows   []Row
+	config              Configuration
+	Rows                []Row
+	InfoEndpointTimeout time.Duration
 }
 
 type Row struct {
@@ -178,7 +179,8 @@ func NewDeployment(configuration Configuration, urlAssembler UrlAssembler) *Depl
 		}
 		rows = append(rows, row)
 	}
-	return &Deployment{config: configuration, Rows: rows}
+	// Default timeout can be set to a different value later
+	return &Deployment{config: configuration, Rows: rows, InfoEndpointTimeout: 2 * time.Second}
 }
 
 func (d Deployment) makeOverview() *DeploymentOverview {
@@ -197,7 +199,7 @@ func (d Deployment) fetchVersions() {
 			waitGroup.Add(1)
 			// Asyncronous using Go Routines
 			go func(finalCell *DeploymentCell, wg *sync.WaitGroup) {
-				finalCell.updateCellContent(time.Second)
+				finalCell.updateCellContent(d.InfoEndpointTimeout)
 				wg.Done()
 			}(cell, waitGroup)
 		}
