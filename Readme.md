@@ -57,6 +57,7 @@ func showVersions(rw http.ResponseWriter, req *http.Request) {
 
 
 ###Configuration
+The deployment object has a property `InfoEndpointTimeout` defaulting to 2 seconds.
 ```
 {
   "WebServices": [
